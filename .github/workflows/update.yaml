@@ -41,6 +41,10 @@ jobs:
         cp /tmp/pkgs.json ./
         cp README.md pkgs.json ~/.aptly/public/rsdk-local/
         
+        pushd ~/.aptly/public/rsdk-local/
+        find . > files.list
+        popd
+        
         git config --global user.name 'github-actions[bot]'
         git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
         git add pkgs.json
