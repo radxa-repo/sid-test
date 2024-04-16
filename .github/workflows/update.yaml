@@ -1,5 +1,8 @@
 jobs:
   update:
+    permissions:
+      id-token: "write"
+      pages: "write"
     runs-on: "ubuntu-latest"
     steps:
     - name: "Checkout"
