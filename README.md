@@ -1,6 +1,6 @@
-[![Update packages](https://github.com/radxa-repo/sid-test/actions/workflows/update.yaml/badge.svg)](https://github.com/radxa-repo/sid-test/actions/workflows/update.yaml)
-
 # sid-test
+
+[![Update packages](https://github.com/radxa-repo/sid-test/actions/workflows/update.yaml/badge.svg)](https://github.com/radxa-repo/sid-test/actions/workflows/update.yaml)
 
 ## Usage
 

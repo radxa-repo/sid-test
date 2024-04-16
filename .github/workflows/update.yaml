@@ -19,7 +19,7 @@ jobs:
       name: "Build apt archive"
       run: |
         sudo apt-get update
-        sudo apt-get install -y aptly
+        sudo apt-get install -y aptly pandoc
         
         cat << EOF | gpg --import
         ${{ secrets.GPG_KEY }}
@@ -42,7 +42,8 @@ jobs:
     - name: "Copy content from current repo"
       run: |
         cp /tmp/pkgs.json ./
-        cp README.md pkgs.json ~/.aptly/public/rsdk-local/
+        cp pkgs.json ~/.aptly/public/rsdk-local/
+        pandoc --from gfm --to html --standalone README.md --output ~/.aptly/public/rsdk-local/index.html
         
         pushd ~/.aptly/public/rsdk-local/
         find . > files.list
