@@ -6,39 +6,39 @@ jobs:
       uses: "actions/checkout@v4"
       with:
         fetch-depth: 0
-    - name: "Rebase to main"
+    - env:
+        GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      name: "Build apt archive"
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git switch gh-pages
-        git rebase -X theirs main
-    - name: "Update packages"
-      uses: "radxa-repo/apt-repo-action@main"
-      with:
-        organization: "radxa-pkg"
-        token: "${{ secrets.GITHUB_TOKEN }}"
-    - id: "git-check"
-      name: "Check for modified files"
-      run: |
-        echo "modified=$([ -z "$(git status --porcelain)" ]; echo $?)" >> "$GITHUB_OUTPUT"
-    - if: "steps.git-check.outputs.modified == 1"
-      name: "Commit changes"
-      run: |
+        sudo apt-get update
+        sudo apt-get install -y aptly
+        
         cat << EOF | gpg --import
         ${{ secrets.GPG_KEY }}
         EOF
-        freight cache
-        git add .
-        git commit -m "Update packages"
-        git push -f
+        cat << EOF | gpg --import
+        ${{ secrets.RADXA_APT_KEY_2024 }}
+        EOF
+        
+        suites=("sid-test")
+        
+        src/bin/rsdk infra-pkg-snapshot
+        src/bin/rsdk infra-pkg-download "${suites[@]}"
+        src/bin/rsdk infra-repo-build "${suites[@]}"
+      shell: "bash"
+    - name: "Setup Pages"
+      uses: "actions/configure-pages@v5"
+    - name: "Upload artifact"
+      uses: "actions/upload-pages-artifact@v3"
+      with:
+        path: "~/.aptly/public/rsdk-local/"
+    - if: "github.event_name != 'pull_request'"
+      name: "Deploy to GitHub Pages"
+      uses: "actions/deploy-pages@v4"
 name: "Update packages"
 "on":
   repository_dispatch:
     types:
     - "new_package_release"
   workflow_dispatch: {}
-  workflow_run:
-    types:
-    - "completed"
-    workflows:
-    - "Reset APT repo"
+permissions: {}
