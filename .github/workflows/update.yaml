@@ -30,7 +30,7 @@ jobs:
         src/bin/rsdk infra-pkg-download "${suites[@]}"
         src/bin/rsdk infra-repo-build "${suites[@]}"
         
-        echo "pages=$(realpath ~/.aptly/public/)" >> $GITHUB_OUTPUT
+        echo "pages=$(realpath ~/.aptly/public/rsdk-local/.)" >> $GITHUB_OUTPUT
         cp pkgs.json /tmp/pkgs.json
       shell: "bash"
     - name: "Setup Pages"
