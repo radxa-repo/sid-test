@@ -8,6 +8,7 @@ jobs:
         repository: "RadxaOS-SDK/rsdk"
     - env:
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      id: "build"
       name: "Build apt archive"
       run: |
         sudo apt-get update
@@ -25,13 +26,14 @@ jobs:
         src/bin/rsdk infra-pkg-snapshot
         src/bin/rsdk infra-pkg-download "${suites[@]}"
         src/bin/rsdk infra-repo-build "${suites[@]}"
+        echo "pages='$(realpath ~/.aptly/public/rsdk-local/)'" >> $GITHUB_OUTPUT
       shell: "bash"
     - name: "Setup Pages"
       uses: "actions/configure-pages@v5"
     - name: "Upload artifact"
       uses: "actions/upload-pages-artifact@v3"
       with:
-        path: "~/.aptly/public/rsdk-local/"
+        path: "${{ steps.build.outputs.pages }}"
     - if: "github.event_name != 'pull_request'"
       name: "Deploy to GitHub Pages"
       uses: "actions/deploy-pages@v4"
