@@ -26,7 +26,9 @@ jobs:
         src/bin/rsdk infra-pkg-snapshot
         src/bin/rsdk infra-pkg-download "${suites[@]}"
         src/bin/rsdk infra-repo-build "${suites[@]}"
-        echo "pages='$(realpath ~/.aptly/public/rsdk-local/)'" >> $GITHUB_OUTPUT
+        
+        echo "pages=$(realpath ~/.aptly/public/)" >> $GITHUB_OUTPUT
+        cp pkgs.json /tmp/pkgs.json
       shell: "bash"
     - name: "Setup Pages"
       uses: "actions/configure-pages@v5"
@@ -37,6 +39,19 @@ jobs:
     - if: "github.event_name != 'pull_request'"
       name: "Deploy to GitHub Pages"
       uses: "actions/deploy-pages@v4"
+    - name: "Checkout"
+      uses: "actions/checkout@v4"
+    - env:
+        GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      name: "Commit package snapshot"
+      run: |
+        cp /tmp/pkgs.json ./
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add pkgs.json
+        git commit -m "chore: update package snapshot"
+        git push
+      shell: "bash"
 name: "Update packages"
 "on":
   repository_dispatch:
