@@ -53,7 +53,8 @@ jobs:
         export RSDK_REPO_ORIGIN="$(../src/bin/rsdk config infra.repository.origin)"
         git add pkgs.json
         
-        pushd "~/.aptly/public/$RSDK_REPO_ORIGIN/"
+        ls -la "$HOME/.aptly/public"
+        pushd "$HOME/.aptly/public/$RSDK_REPO_ORIGIN/"
             cp "$OLDPWD/pkgs.json" ./
             pandoc --from gfm --to html --standalone "$OLDPWD/README.md" --output index.html
             find . > files.list
