@@ -52,7 +52,6 @@ jobs:
     - env:
         GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
         PR_BRANCH: "${{ github.job }}/${{ github.run_id }}"
-      if: "steps.deploy.outcome == 'success'"
       name: "Commit package snapshot"
       run: |
         set -x
