@@ -58,7 +58,6 @@ jobs:
         git branch -m "$PR_BRANCH"
         git push -u origin "$PR_BRANCH"
         PR_URL="$(gh pr create --head "$PR_BRANCH" --fill-verbose)"
-        gh pr review --approve "$PR_URL"
         gh workflow run .github/workflows/build.yaml --ref "$PR_BRANCH"
         gh pr merge --auto "$PR_URL"
         popd
