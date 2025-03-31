@@ -30,7 +30,7 @@ jobs:
     - env:
         GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       id: "build"
-      name: "Build apt archive"
+      name: "Update pkgs.json"
       run: |
         pushd .infra-repo
         if [[ "${{ github.repository }}" != *-test ]] && \
@@ -43,6 +43,8 @@ jobs:
         git add pkgs.json
         
         if [[ -n "$(git status --porcelain)" ]]; then
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git commit -m "chore: update package snapshot"
         fi
         popd
@@ -62,7 +64,7 @@ jobs:
         gh pr merge --auto --rebase --delete-branch "$PR_URL"
         popd
       shell: "bash"
-name: "Update package info"
+name: "Update package version info"
 "on":
   repository_dispatch:
     types:
