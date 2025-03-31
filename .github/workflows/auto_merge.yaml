@@ -7,9 +7,7 @@ jobs:
         echo ${{ github.actor }}
 name: "Auto-merge "
 "on":
-  pull_request:
-    branches:
-    - "main"
+  pull_request: {}
 permissions:
   contents: "write"
   pull-requests: "write"
