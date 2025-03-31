@@ -54,12 +54,10 @@ jobs:
         PR_BRANCH: "${{ github.job }}/${{ github.run_id }}"
       name: "Commit package snapshot"
       run: |
-        set -x
         pushd .infra-repo
         git branch -m "$PR_BRANCH"
         git push -u origin "$PR_BRANCH"
         PR_URL="$(gh pr create --head "$PR_BRANCH" --fill-verbose)"
-        gh pr review --approve "$PR_URL"
         gh pr merge --auto --rebase --delete-branch "$PR_URL"
         popd
       shell: "bash"
