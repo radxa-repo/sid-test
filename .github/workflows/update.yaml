@@ -22,7 +22,7 @@ jobs:
     - name: "Checkout rsdk"
       uses: "actions/checkout@v4"
       with:
-        ref: "fac33c55ee77e9e15979cb0b98f069fac8501266"
+        ref: "be2b25a30a6b24b2643bfd6a6eef4fae0b76c67d"
         repository: "RadxaOS-SDK/rsdk"
     - name: "Checkout current repo"
       uses: "actions/checkout@v4"
@@ -103,11 +103,15 @@ jobs:
       if: "github.event_name != 'pull_request'"
       name: "Deploy to GitHub Pages"
       uses: "actions/deploy-pages@v4"
-    - if: "steps.deploy.outcome == 'success'"
+    - env:
+        GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
+        PR_BRANCH: "${{ github.job }}/${{ github.run_id }}"
+      if: "steps.deploy.outcome == 'success'"
       name: "Commit package snapshot"
       run: |
         pushd .infra-repo
-        git push
+        git push -u origin "main:$PR_BRANCH"
+        gh pr create --head "$PR_BRANCH" --fill-verbose
         popd
       shell: "bash"
     - name: "Download Pages artifact"
