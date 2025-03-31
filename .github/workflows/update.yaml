@@ -105,12 +105,13 @@ jobs:
       uses: "actions/deploy-pages@v4"
     - env:
         GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
-        PR_BRANCH: "${{ github.job }}_${{ github.run_id }}"
+        PR_BRANCH: "${{ github.job }}/${{ github.run_id }}"
       if: "steps.deploy.outcome == 'success'"
       name: "Commit package snapshot"
       run: |
         pushd .infra-repo
-        git push -u origin "main:$PR_BRANCH"
+        git branch -m "$PR_BRANCH"
+        git push -u origin "$PR_BRANCH"
         gh pr create --head "$PR_BRANCH" --fill-verbose
         popd
       shell: "bash"
