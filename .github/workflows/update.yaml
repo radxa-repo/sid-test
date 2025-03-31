@@ -113,7 +113,9 @@ jobs:
         pushd .infra-repo
         git branch -m "$PR_BRANCH"
         git push -u origin "$PR_BRANCH"
-        gh pr create --head "$PR_BRANCH" --fill-verbose
+        PR_URL="$(gh pr create --head "$PR_BRANCH" --fill-verbose)"
+        gh pr review --approve "$PR_URL"
+        gh pr merge --auto --rebase "$PR_URL"
         popd
       shell: "bash"
     - name: "Download Pages artifact"
