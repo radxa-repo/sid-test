@@ -4,9 +4,9 @@ concurrency:
 jobs:
   update:
     permissions:
-      contents: "write"
       id-token: "write"
       pages: "write"
+      pull-requests: "write"
     runs-on: "ubuntu-latest"
     steps:
     - env:
