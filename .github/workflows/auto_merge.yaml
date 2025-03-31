@@ -1,0 +1,15 @@
+jobs:
+  auto_merge:
+    runs-on: "ubuntu-latest"
+    steps:
+    - name: "test"
+      run: |
+        echo ${{ github.actor }}
+name: "Auto-merge "
+"on":
+  pull_request:
+    branches:
+    - "main"
+permissions:
+  contents: "write"
+  pull-requests: "write"
